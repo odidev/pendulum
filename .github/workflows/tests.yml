@@ -68,17 +68,17 @@ jobs:
         python-version: [3.6, 3.7, 3.8]
     steps:
       - uses: actions/checkout@v2
-      - run: |
-          docker run --rm --privileged hypriot/qemu-register
+      - name: Set up QEMU
+        id: qemu
+        uses: docker/setup-qemu-action@v1
       - name: Setup test environment and run tests
         uses: docker://quay.io/pypa/manylinux2014_aarch64  
         with:
           args: |
               bash -c "curl -fsS -o get-poetry.py https://raw.githubusercontent.com/sdispater/poetry/master/get-poetry.py;
-              yum install -y python3 python3-pip python3-devel;
-              python3 get-poetry.py --preview -y;
+              /opt/python/cp36-cp36m/bin/python3 get-poetry.py --preview -y;
               source $HOME/.poetry/env;
-              poetry env use python3;
+              poetry env use /opt/python/cp36-cp36m/bin/python3;
               poetry config virtualenvs.in-project true;
               poetry run python -m pip install pip -U;
               poetry install -vvv;
